@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_repos">
+
+    <navigation
+        android:id="@+id/navigation_repos"
+        app:startDestination="@id/fragment_repo_list">
+        <fragment
+            android:id="@+id/fragment_repo_list"
+            android:name="com.example.aircall_test_v2.features.repos.list.RepoListFragment"
+            tools:layout="@layout/fragment_repo_list">
+
+            <action
+                android:id="@+id/action_navigate_to_repo_github_details"
+                app:destination="@id/fragment_repo_details"
+                app:enterAnim="@anim/slide_in_from_right"
+                app:exitAnim="@anim/slide_out_to_left"
+                app:popEnterAnim="@anim/slide_in_from_left"
+                app:popExitAnim="@anim/slide_out_to_right" />
+
+        </fragment>
+        <fragment
+            android:id="@+id/fragment_repo_details"
+            android:name="com.example.aircall_test_v2.features.repos.details.RepoDetailsFragment"
+            tools:layout="@layout/fragment_repo_details" />
+    </navigation>
+
+</navigation>
