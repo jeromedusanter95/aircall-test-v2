@@ -1,6 +1,7 @@
 package com.example.data.features.repos.datasources
 
 import com.example.data.AppDatabase
+import com.example.data.features.repos.models.business.Repo
 import com.example.data.features.repos.models.locals.RepoLocal
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class FavoriteReposLocalDataSource @Inject internal constructor(private val appD
         appDatabase.repoDao().deleteById(repoId)
     }
 
-    suspend fun insertById(repoId: Long) {
-        appDatabase.repoDao().insert(RepoLocal(repoId))
+    suspend fun insert(repo: RepoLocal) {
+        appDatabase.repoDao().insert(repo)
     }
 }

@@ -1,17 +1,17 @@
 package com.example.data.features.repos.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.data.features.repos.models.locals.RepoLocal
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RepoDao {
 
     @Query("SELECT * FROM repos")
-    fun all(): Flow<List<RepoLocal>>
+    fun all(): LiveData<List<RepoLocal>>
 
     @Query("SELECT * FROM repos WHERE id=:repoId")
     suspend fun getById(repoId: Long): RepoLocal?

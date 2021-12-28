@@ -15,7 +15,6 @@ class ReposModule {
     @Provides
     @Singleton
     internal fun provideRepoApiService(retrofit: Retrofit): RepoApiService {
-        retrofit.newBuilder().baseUrl("")
         return retrofit.create(RepoApiService::class.java)
     }
 }

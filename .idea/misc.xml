@@ -3,9 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/bg_rectangle_outline_blue.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/ic_baseline_account_tree_24.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/ic_empty.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.2564814814814815" />
+        <entry key="app/src/main/res/drawable/ic_star_selected.xml" value="0.2564814814814815" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14361702127659576" />
         <entry key="app/src/main/res/layout/fragment_repo_details.xml" value="0.254981884057971" />
         <entry key="app/src/main/res/layout/fragment_repo_list.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/item_issue.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/item_repo.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/item_repo_github.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/sfl_repo_github_list_empty.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/sfl_repo_github_list_error.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/layout/sfl_repo_github_list_loading.xml" value="0.254981884057971" />
+        <entry key="app/src/main/res/menu/menu_repo_github_list.xml" value="0.2953125" />
       </map>
     </option>
   </component>

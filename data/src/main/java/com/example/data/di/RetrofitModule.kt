@@ -28,6 +28,7 @@ class RetrofitModule {
     @Singleton
     internal fun provideRetrofitWithoutBaseUrl(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

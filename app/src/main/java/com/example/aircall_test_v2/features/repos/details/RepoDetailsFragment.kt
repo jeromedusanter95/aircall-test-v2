@@ -8,8 +8,9 @@ import com.example.aircall_test_v2.base.IUiAction
 import com.example.aircall_test_v2.databinding.FragmentRepoDetailsBinding
 import com.example.aircall_test_v2.features.repos.ReposViewModel
 import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
-@EntryPoint
+@AndroidEntryPoint
 class RepoDetailsFragment : BaseFragment<FragmentRepoDetailsBinding, IUiAction, ReposViewModel>() {
 
     override val resId: Int = R.layout.fragment_repo_details

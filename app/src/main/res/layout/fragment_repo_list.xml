@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,9 +9,28 @@
             type="com.example.aircall_test_v2.features.repos.ReposViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.example.aircall_test_v2.features.repos.list.RepoListStatefulLayout
+        android:id="@+id/statefulLayout_repoGithub"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:uiState="@{viewModel.listUiState.value}">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/unit_2">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_repoGithub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:list="@{viewModel.listUiModel.list}" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.example.aircall_test_v2.features.repos.list.RepoListStatefulLayout>
 </layout>

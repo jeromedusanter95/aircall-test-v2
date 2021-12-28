@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_see_bdd"
+        android:icon="@drawable/ic_baseline_data_usage_24"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/item_refresh"
+        android:icon="@drawable/ic_baseline_refresh_24"
+        android:title=""
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_filter"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        android:title=""
+        app:showAsAction="always" />
+</menu>

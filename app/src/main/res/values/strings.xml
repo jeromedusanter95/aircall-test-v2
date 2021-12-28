@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">aircall-test-v2</string>
+    <string name="repo_list_title">Dépôts Github</string>
+    <string name="repo_details_title">Détails du dépôt</string>
+    <string name="repo_list_error_title">Une erreur est survenue…</string>
+    <string name="repo_list_error_subtitle">Assurez vous d\'avoir une connexion internet et veuillez réessayer.</string>
+    <string name="repo_list_error_button_text">Réessayer</string>
+    <string name="repo_list_empty_title">Aucun dépôt trouvé</string>
+    <string name="repo_list_empty_subtitle">Votre recherche n\'a trouvée aucun résultat. Veuillez réessayer.</string>
+    <string name="repo_list_loading_title">Chargement des dépôts</string>
+    <string name="repo_list_loading_subtitle">en cours…</string>
+    <string name="repo_details_watchers_title">Observateurs</string>
+    <string name="repo_details_stargazers_title">Etoiles reçues</string>
+    <string name="repo_details_forks_title">Forks réalisés</string>
+    <string name="repo_details_issues_title">Tickets ouverts depuis moins d\'un an</string>
+    <string name="repo_filter_title">Filtres</string>
+    <string name="repo_filter_query_hint">Mot clés</string>
+    <string name="repo_filter_per_page_hint">Nombre de résultats</string>
+    <string name="repo_filter_query_error">Ce champs ne peut pas être vide</string>
+    <string name="repo_filter_per_page_error">Ce champs ne peut pas être vide ou égal à 0</string>
+    <string name="repo_filter_button_text">Valider</string>
+    <string name="repo_sort_stars">Nombre d\'étoiles</string>
+    <string name="repo_sort_forks">Nombre de forks</string>
+    <string name="repo_sort_help_wanted_issues">Nombres d\'issues</string>
+    <string name="repo_sort_updated">Modifié récemment</string>
+    <string name="repo_details_issues_week">Semaine %1$d</string>
+    <string name="repo_details_issues_interval_dates">%1$s - %2$s</string>
+    <string name="repo_details_issues_amount">Nombre de tickets : %1$d</string>
 </resources>

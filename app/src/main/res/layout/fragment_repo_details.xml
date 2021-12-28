@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,9 +10,139 @@
             type="com.example.aircall_test_v2.features.repos.ReposViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--<androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/unit_2">
+
+            <TextView
+                android:id="@+id/text_title"
+                style="@style/AppTheme.Text.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.detailsUiModel.name}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Name of Repository" />
+
+            <TextView
+                android:id="@+id/text_description"
+                style="@style/AppTheme.Text.Content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_2"
+                android:text="@{viewModel.detailsUiModel.description}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_title"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum" />
+
+            <TextView
+                android:id="@+id/text_watchersTitle"
+                style="@style/AppTheme.Text.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_4"
+                android:drawablePadding="@dimen/unit_1"
+                android:gravity="center_vertical"
+                android:text="@string/repo_details_watchers_title"
+                app:drawableStartCompat="@drawable/ic_baseline_remove_red_eye_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_description" />
+
+            <TextView
+                android:id="@+id/text_watchersCount"
+                style="@style/AppTheme.Text.Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unit_1"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.detailsUiModel.watchersCount}"
+                app:layout_constraintBottom_toBottomOf="@+id/text_watchersTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_watchersTitle"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/text_stargazersTitle"
+                style="@style/AppTheme.Text.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_3"
+                android:drawablePadding="@dimen/unit_1"
+                android:gravity="center_vertical"
+                android:text="@string/repo_details_stargazers_title"
+                app:drawableStartCompat="@drawable/ic_baseline_star_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_watchersCount" />
+
+            <TextView
+                android:id="@+id/text_stargazersCount"
+                style="@style/AppTheme.Text.Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unit_1"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.detailsUiModel.stargazersCount}"
+                app:layout_constraintBottom_toBottomOf="@+id/text_stargazersTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_stargazersTitle"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/text_forksTitle"
+                style="@style/AppTheme.Text.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_3"
+                android:drawablePadding="@dimen/unit_1"
+                android:gravity="center_vertical"
+                android:text="@string/repo_details_forks_title"
+                app:drawableStartCompat="@drawable/ic_baseline_account_tree_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_stargazersCount" />
+
+            <TextView
+                android:id="@+id/text_forksCount"
+                style="@style/AppTheme.Text.Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unit_1"
+                android:gravity="center_horizontal"
+                android:text="@{viewModel.detailsUiModel.forksCount}"
+                app:layout_constraintBottom_toBottomOf="@+id/text_forksTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_forksTitle"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/text_issues_title"
+                style="@style/AppTheme.Text.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_2"
+                android:text="@string/repo_details_issues_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_forksTitle" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_issues"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_2"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_issues_title"
+                app:list="@{viewModel.detailsUiModel.issueList}" />-->
+
+    </androidx.core.widget.NestedScrollView>
 </layout>

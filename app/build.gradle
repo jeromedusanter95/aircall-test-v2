@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -48,6 +49,7 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // ----- StatefulLayout ----- //
     implementation 'cz.kinst.jakub:android-stateful-layout-simple:2.0.7'
@@ -58,6 +60,16 @@ dependencies {
     // ----- Navigation ----- //
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+
+    // ----- Hilt ----- //
+    api "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    api("androidx.hilt:hilt-navigation-fragment:1.0.0")
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_android_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_android_version"
+
+    implementation 'com.wajahatkarim3:roomexplorer:0.0.2'
 
     implementation project(':data')
 }

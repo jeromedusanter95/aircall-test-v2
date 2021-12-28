@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.aircall_test_v2.features.repos.list.RepoItemViewModel" />
+    </data>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unit_0"
+        android:layout_marginTop="@dimen/unit_0"
+        android:layout_marginEnd="@dimen/unit_0"
+        android:layout_marginBottom="@dimen/unit_2"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/unit_1"
+        app:cardElevation="@dimen/unit_0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/unit_2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/unit_1"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{(view) -> viewModel.onFavoriteClick()}"
+                    android:src="@{context.getDrawable(viewModel.observableFavoriteIconId)}" />
+
+                <TextView
+                    style="@style/AppTheme.Text.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.name}"
+                    tools:text="Okhttp" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/AppTheme.Text.Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unit_1"
+                android:text="@{viewModel.description}"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
