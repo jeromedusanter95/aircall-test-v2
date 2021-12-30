@@ -35,7 +35,7 @@ class RepoListFragment : BaseFragment<FragmentRepoListBinding, ReposUiAction, Re
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerRepoGithub.adapter = adapter
         binding.statefulLayoutRepoGithub.setErrorView {
-            //buttonRetry.setOnClickListener { viewModel.getRepoGithubList() }
+            buttonRetry.setOnClickListener { viewModel.retryFetchRepos() }
         }
     }
 

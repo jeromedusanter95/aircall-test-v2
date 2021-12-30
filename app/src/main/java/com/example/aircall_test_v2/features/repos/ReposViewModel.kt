@@ -117,6 +117,12 @@ class ReposViewModel @Inject constructor(
         }
     }
 
+    fun retryFetchRepos() {
+        viewModelScope.launch {
+            repository.tryFetchRepos()
+        }
+    }
+
     override fun onCleared() {
         repository.stateRepoList.removeObserver(stateRepoListObserver)
         repository.stateRepoDetails.removeObserver(stateRepoDetailsObserver)
