@@ -2,32 +2,31 @@ package com.example.aircall_test_v2.features.repos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.example.aircall_test_v2.base.BaseViewModel
 import com.example.aircall_test_v2.base.CommonUiAction
-import com.example.aircall_test_v2.features.repos.details.IssueItemUiModel
+import com.example.aircall_test_v2.features.repos.details.RepoDetailsMapper
 import com.example.aircall_test_v2.features.repos.details.RepoDetailsUiModel
-import com.example.aircall_test_v2.features.repos.list.RepoItemUiModel
 import com.example.aircall_test_v2.features.repos.list.RepoListStatefulLayout
 import com.example.aircall_test_v2.features.repos.list.RepoListUiModel
+import com.example.aircall_test_v2.features.repos.list.RepoMapper
 import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterMapper
 import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterUiModel
 import com.example.data.base.State
 import com.example.data.features.repos.ReposRepository
-import com.example.data.features.repos.models.business.IssuesHistoryByWeek
 import com.example.data.features.repos.models.business.Repo
 import com.example.data.features.repos.models.business.RepoFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class ReposViewModel @Inject constructor(
     private val repository: ReposRepository,
-    private val filterMapper: RepoFilterMapper
+    private val repoMapper: RepoMapper,
+    private val filterMapper: RepoFilterMapper,
+    private val repoDetailsMapper: RepoDetailsMapper
 ) : BaseViewModel() {
 
     private val _listUiState = MutableLiveData(RepoListStatefulLayout.State.CONTENT)
@@ -42,42 +41,42 @@ class ReposViewModel @Inject constructor(
     val detailsUiModel: LiveData<RepoDetailsUiModel>
         get() = _detailsUiModel
 
-    private val _filterUiModel = MutableLiveData(
-        filterMapper.mapModelToUiModel(RepoFilter.newDefaultInstance())
-    )
+    private val _filterUiModel =
+        MutableLiveData(filterMapper.mapModelToUiModel(RepoFilter.newDefaultInstance()))
     val filterUiModel: LiveData<RepoFilterUiModel>
         get() = _filterUiModel
 
+    private val stateRepoListObserver = Observer<State<List<Repo>>> { state ->
+        when (state) {
+            is State.Loading -> _listUiState.value = RepoListStatefulLayout.State.LOADING
+            is State.Success<List<Repo>> -> {
+                state.data.let { list: List<Repo> ->
+                    _listUiState.value =
+                        if (list.isEmpty()) RepoListStatefulLayout.State.EMPTY
+                        else RepoListStatefulLayout.State.CONTENT
+                    _listUiModel.value =
+                        RepoListUiModel(list.map { repoMapper.mapModelToUiModel(it) })
+                }
+            }
+            is State.Failure -> _listUiState.value = RepoListStatefulLayout.State.ERROR
+        }
+    }
+
+    private val stateRepoDetailsObserver = Observer<State<Repo>> { state ->
+        when (state) {
+            is State.Success -> {
+                _detailsUiModel.value = repoDetailsMapper.mapModelToUiModel(state.data)
+                doUiAction(ReposUiAction.NavToRepoGithubDetails)
+            }
+            is State.Failure -> {
+                doUiAction(CommonUiAction.ShowSnackBar("Dépôt non trouvé"))
+            }
+        }
+    }
+
     init {
-        repository.stateRepoList.observeForever { state ->
-            when (state.name) {
-                State.Name.LOADING -> _listUiState.value = RepoListStatefulLayout.State.LOADING
-                State.Name.SUCCESS -> {
-                    state.value?.let { list ->
-                        _listUiState.value =
-                            if (list.isEmpty()) RepoListStatefulLayout.State.EMPTY
-                            else RepoListStatefulLayout.State.CONTENT
-                        _listUiModel.value = RepoListUiModel(list.map { it.toRepoItemUiModel() })
-                    }
-
-                }
-                State.Name.ERROR -> _listUiState.value = RepoListStatefulLayout.State.ERROR
-                State.Name.IDLE -> Unit
-            }
-        }
-
-        repository.stateRepoDetails.observeForever { state ->
-            when (state.name) {
-                State.Name.SUCCESS -> {
-                    _detailsUiModel.value = state.value?.toRepoDetailsUiModel()
-                    doUiAction(ReposUiAction.NavToRepoGithubDetails)
-                }
-                State.Name.ERROR -> {
-                    doUiAction(CommonUiAction.ShowSnackBar("Dépôt non trouvé"))
-                }
-            }
-        }
-
+        repository.stateRepoList.observeForever(stateRepoListObserver)
+        repository.stateRepoDetails.observeForever(stateRepoDetailsObserver)
         viewModelScope.launch {
             repository.tryFetchRepos()
         }
@@ -118,42 +117,9 @@ class ReposViewModel @Inject constructor(
         }
     }
 
-    private fun Repo.toRepoItemUiModel(): RepoItemUiModel {
-        return RepoItemUiModel(
-            id,
-            name,
-            description,
-            private,
-            createdAt.toFormattedStringWithPattern("dd/MM/yyyy"),
-            isFavorite
-        )
-    }
-
-    private fun Repo.toRepoDetailsUiModel(): RepoDetailsUiModel {
-        return RepoDetailsUiModel(
-            name,
-            description,
-            watchersCount.toString(),
-            stargazersCount.toString(),
-            forksCount.toString(),
-            issuesHistory.map { it.toIssueUiModel() }
-        )
-    }
-
-    private fun IssuesHistoryByWeek.toIssueUiModel(): IssueItemUiModel {
-        return IssueItemUiModel(
-            week = week,
-            weekStartDate = weekStartDate.toFormattedStringWithPattern("dd/MM/yyyy"),
-            weekEndDate = weekEndDate.toFormattedStringWithPattern("dd/MM/yyyy"),
-            amount = amount
-        )
-    }
-
-    private fun LocalDate.toFormattedStringWithPattern(pattern: String): String {
-        return format(DateTimeFormatter.ofPattern(pattern))
-    }
-
-    private fun LocalDateTime.toFormattedStringWithPattern(pattern: String): String {
-        return format(DateTimeFormatter.ofPattern(pattern))
+    override fun onCleared() {
+        repository.stateRepoList.removeObserver(stateRepoListObserver)
+        repository.stateRepoDetails.removeObserver(stateRepoDetailsObserver)
+        super.onCleared()
     }
 }

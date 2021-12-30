@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.data.base.State
 import com.example.data.features.repos.datasources.FavoriteReposLocalDataSource
 import com.example.data.features.repos.datasources.ReposNetworkDataSource
-import com.example.data.features.repos.errors.RepoDetailsError
-import com.example.data.features.repos.errors.RepoListError
 import com.example.data.features.repos.models.apis.RepoApi
 import com.example.data.features.repos.models.apis.RepoSortApi
 import com.example.data.features.repos.models.business.*
@@ -28,16 +26,12 @@ class ReposRepositoryImpl @Inject internal constructor(
     private var repoFilterInCache = RepoFilter.newDefaultInstance()
     private var isFirstTimeObservingLocalDb = true
 
-    private val _stateRepoList = MutableLiveData(
-        State<List<Repo>, RepoListError>(State.Name.IDLE, null, null)
-    )
-    override val stateRepoList: LiveData<State<List<Repo>, RepoListError>>
+    private val _stateRepoList = MutableLiveData<State<List<Repo>>>()
+    override val stateRepoList: LiveData<State<List<Repo>>>
         get() = _stateRepoList
 
-    private val _stateRepoDetails = MutableLiveData(
-        State<Repo, RepoDetailsError>(State.Name.IDLE, null, null)
-    )
-    override val stateRepoDetails: LiveData<State<Repo, RepoDetailsError>>
+    private val _stateRepoDetails = MutableLiveData<State<Repo>>()
+    override val stateRepoDetails: LiveData<State<Repo>>
         get() = _stateRepoDetails
 
     init {
@@ -46,7 +40,7 @@ class ReposRepositoryImpl @Inject internal constructor(
             reposInLocalDb.addAll(it.orEmpty())
             val result = applyFavoriteTransformation(reposInCaches, reposInLocalDb)
             if (!isFirstTimeObservingLocalDb) {
-                _stateRepoList.value = State(State.Name.SUCCESS, value = result)
+                _stateRepoList.value = State.Success(result)
             } else {
                 isFirstTimeObservingLocalDb = false
             }
@@ -65,39 +59,37 @@ class ReposRepositoryImpl @Inject internal constructor(
     }
 
     override suspend fun tryFetchRepos() {
-        _stateRepoList.value = State(State.Name.LOADING, value = null, error = null)
+        _stateRepoList.value = State.Loading
         try {
             val result = applyFavoriteTransformation(
                 fetchRepos(repoFilterInCache),
                 reposInLocalDb
             )
-            _stateRepoList.value = State(State.Name.SUCCESS, value = result, error = null)
+            _stateRepoList.value = State.Success(result)
         } catch (t: Throwable) {
-            _stateRepoList.value = State(State.Name.ERROR, value = null, error = RepoListError(t))
+            _stateRepoList.value = State.Failure(t)
         }
     }
 
     override suspend fun forceRefresh() {
-        _stateRepoList.value = State(State.Name.LOADING, value = null, error = null)
+        _stateRepoList.value = State.Loading
         try {
             val result = applyFavoriteTransformation(
                 fetchRepos(RepoFilter.newDefaultInstance()),
                 reposInLocalDb
             )
-            _stateRepoList.value = State(State.Name.SUCCESS, value = result, error = null)
+            _stateRepoList.value = State.Success(result)
         } catch (t: Throwable) {
-            _stateRepoList.value = State(State.Name.ERROR, value = null, error = RepoListError(t))
+            _stateRepoList.value = State.Failure(t)
         }
     }
 
     override fun selectRepo(id: Long) {
         val selectedRepo = reposInCaches.firstOrNull { it.id == id }
         if (selectedRepo != null) {
-            _stateRepoDetails.value =
-                State(State.Name.SUCCESS, value = selectedRepo, error = null)
+            _stateRepoDetails.value = State.Success(selectedRepo)
         } else {
-            _stateRepoDetails.value =
-                State(State.Name.ERROR, value = null, error = RepoDetailsError())
+            _stateRepoDetails.value = State.Failure(Throwable("Couldn't find repo"))
         }
     }
 
