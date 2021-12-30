@@ -12,7 +12,6 @@ import com.example.aircall_test_v2.databinding.FragmentRepoListBinding
 import com.example.aircall_test_v2.features.repos.ReposUiAction
 import com.example.aircall_test_v2.features.repos.ReposViewModel
 import com.example.data.AppDatabase
-import com.example.data.features.repos.models.business.Repo
 import com.wajahatkarim3.roomexplorer.RoomExplorer
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +22,7 @@ class RepoListFragment : BaseFragment<FragmentRepoListBinding, ReposUiAction, Re
 
     override val viewModel: ReposViewModel by hiltNavGraphViewModels(R.id.navigation_repos)
 
-    private val adapter by lazy { RepoListAdapter(buildRepoGithubAdapterListener()) }
+    private val adapter by lazy { RepoListAdapter(buildRepoAdapterListener()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +44,9 @@ class RepoListFragment : BaseFragment<FragmentRepoListBinding, ReposUiAction, Re
         }
     }
 
-    private fun buildRepoGithubAdapterListener() = object : RepoListAdapter.Listener {
+    private fun buildRepoAdapterListener() = object : RepoListAdapter.Listener {
         override fun onClickItem(itemId: Long) {
-            //viewModel.selectRepoGithub(i  temId)
+            viewModel.selectRepoDetails(itemId)
         }
 
         override fun onFavoriteClick(item: RepoItemUiModel) {

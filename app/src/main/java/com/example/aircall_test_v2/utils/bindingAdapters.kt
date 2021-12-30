@@ -10,9 +10,9 @@ import com.example.aircall_test_v2.base.IUiModel
 import cz.kinst.jakub.view.StatefulLayout
 
 @BindingAdapter("app:list")
-internal fun <T> setList(view: RecyclerView, list: List<T>) {
+internal fun <T> setList(view: RecyclerView, list: List<T>?) {
     val adapter = view.adapter as? BaseAdapter<ViewDataBinding, IUiModel, BaseItemViewModel<IUiModel>>
-    adapter?.addItems(list as List<IUiModel>, clear = true)
+    adapter?.addItems(list as? List<IUiModel> ?: emptyList(), clear = true)
 }
 
 @BindingAdapter("app:uiState")

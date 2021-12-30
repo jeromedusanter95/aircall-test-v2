@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <!--<androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -142,7 +142,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_issues_title"
-                app:list="@{viewModel.detailsUiModel.issueList}" />-->
+                app:list="@{viewModel.detailsUiModel.issueItemList}" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

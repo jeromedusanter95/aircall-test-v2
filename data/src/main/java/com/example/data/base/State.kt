@@ -8,7 +8,7 @@ data class State<T, E>(
     enum class Name {
         IDLE,
         LOADING,
-        LOADED,
+        SUCCESS,
         ERROR
     }
 }
