@@ -9,9 +9,10 @@ import com.example.data.features.repos.models.business.RepoFilter
 
 interface ReposRepository {
     val stateRepoList: LiveData<State<List<Repo>, RepoListError>>
-    val stateRepoSelected: LiveData<State<Repo, RepoDetailsError>>
+    val stateRepoDetails: LiveData<State<Repo, RepoDetailsError>>
     suspend fun toggleFavoriteRepo(id: Long, name: String)
-    suspend fun fetchReposList(repoFilter: RepoFilter)
+    suspend fun tryFetchRepos()
     suspend fun forceRefresh()
     fun selectRepo(id: Long)
+    suspend fun changeFilter(repoFilter: RepoFilter)
 }

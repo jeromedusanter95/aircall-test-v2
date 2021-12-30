@@ -11,6 +11,8 @@ import com.example.aircall_test_v2.base.BaseFragment
 import com.example.aircall_test_v2.databinding.FragmentRepoListBinding
 import com.example.aircall_test_v2.features.repos.ReposUiAction
 import com.example.aircall_test_v2.features.repos.ReposViewModel
+import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterDialogFragment
+import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterDialogFragment_GeneratedInjector
 import com.example.data.AppDatabase
 import com.wajahatkarim3.roomexplorer.RoomExplorer
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,7 +57,7 @@ class RepoListFragment : BaseFragment<FragmentRepoListBinding, ReposUiAction, Re
     }
 
     private fun showFilterDialogFragment() {
-        //RepoGithubFilterDialogFragment.newInstance().show(childFragmentManager, "")
+        RepoFilterDialogFragment.newInstance().show(childFragmentManager, "")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

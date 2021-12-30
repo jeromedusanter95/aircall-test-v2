@@ -10,6 +10,8 @@ import com.example.aircall_test_v2.features.repos.details.RepoDetailsUiModel
 import com.example.aircall_test_v2.features.repos.list.RepoItemUiModel
 import com.example.aircall_test_v2.features.repos.list.RepoListStatefulLayout
 import com.example.aircall_test_v2.features.repos.list.RepoListUiModel
+import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterMapper
+import com.example.aircall_test_v2.features.repos.list.filter.RepoFilterUiModel
 import com.example.data.base.State
 import com.example.data.features.repos.ReposRepository
 import com.example.data.features.repos.models.business.IssuesHistoryByWeek
@@ -24,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReposViewModel @Inject constructor(
-    private val repository: ReposRepository
+    private val repository: ReposRepository,
+    private val filterMapper: RepoFilterMapper
 ) : BaseViewModel() {
 
     private val _listUiState = MutableLiveData(RepoListStatefulLayout.State.CONTENT)
@@ -38,6 +41,12 @@ class ReposViewModel @Inject constructor(
     private val _detailsUiModel = MutableLiveData<RepoDetailsUiModel>(null)
     val detailsUiModel: LiveData<RepoDetailsUiModel>
         get() = _detailsUiModel
+
+    private val _filterUiModel = MutableLiveData(
+        filterMapper.mapModelToUiModel(RepoFilter.newDefaultInstance())
+    )
+    val filterUiModel: LiveData<RepoFilterUiModel>
+        get() = _filterUiModel
 
     init {
         repository.stateRepoList.observeForever { state ->
@@ -57,7 +66,7 @@ class ReposViewModel @Inject constructor(
             }
         }
 
-        repository.stateRepoSelected.observeForever { state ->
+        repository.stateRepoDetails.observeForever { state ->
             when (state.name) {
                 State.Name.SUCCESS -> {
                     _detailsUiModel.value = state.value?.toRepoDetailsUiModel()
@@ -70,7 +79,7 @@ class ReposViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            repository.fetchReposList(RepoFilter.newDefaultInstance())
+            repository.tryFetchRepos()
         }
     }
 
@@ -80,9 +89,20 @@ class ReposViewModel @Inject constructor(
         }
     }
 
-    fun changeFilter(repoFilter: RepoFilter) {
-        viewModelScope.launch {
-            repository.fetchReposList(repoFilter)
+    fun changeFilterUiModel(filterUiModel: RepoFilterUiModel?) {
+        _filterUiModel.value = filterUiModel
+    }
+
+    fun tryChangeFilter() {
+        val filterUiModel = filterUiModel.value ?: return
+        doUiAction(ReposUiAction.ShowErrorQueryError(filterUiModel.query.isEmpty()))
+        doUiAction(ReposUiAction.ShowErrorPerPageError(filterUiModel.perPage.isEmpty() || filterUiModel.perPage.toInt() <= 0))
+        if (filterUiModel.query.isNotEmpty() && filterUiModel.perPage.isNotEmpty() && filterUiModel.perPage.toInt() > 0) {
+            doUiAction(CommonUiAction.HideKeyBoard)
+            doUiAction(CommonUiAction.DismissDialog)
+            viewModelScope.launch {
+                repository.changeFilter(filterMapper.mapUiModelToModel(filterUiModel))
+            }
         }
     }
 

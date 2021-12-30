@@ -11,6 +11,8 @@
         <entry key="app/src/main/res/drawable/ic_star.xml" value="0.2564814814814815" />
         <entry key="app/src/main/res/drawable/ic_star_selected.xml" value="0.2564814814814815" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14361702127659576" />
+        <entry key="app/src/main/res/layout/dialog_repo_filter.xml" value="0.14361702127659576" />
+        <entry key="app/src/main/res/layout/dialog_repo_github_filter.xml" value="0.14361702127659576" />
         <entry key="app/src/main/res/layout/fragment_repo_details.xml" value="0.254981884057971" />
         <entry key="app/src/main/res/layout/fragment_repo_list.xml" value="0.254981884057971" />
         <entry key="app/src/main/res/layout/item_issue.xml" value="0.254981884057971" />

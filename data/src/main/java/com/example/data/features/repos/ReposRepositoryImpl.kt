@@ -13,6 +13,8 @@ import com.example.data.features.repos.models.business.*
 import com.example.data.features.repos.models.locals.RepoLocal
 import com.example.data.utils.toLocaleDate
 import com.example.data.utils.toLocaleDateTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -23,7 +25,8 @@ class ReposRepositoryImpl @Inject internal constructor(
 
     private val reposInCaches = mutableListOf<Repo>()
     private val reposInLocalDb = mutableListOf<RepoLocal>()
-    private var isFirstTimeObserving = true
+    private var repoFilterInCache = RepoFilter.newDefaultInstance()
+    private var isFirstTimeObservingLocalDb = true
 
     private val _stateRepoList = MutableLiveData(
         State<List<Repo>, RepoListError>(State.Name.IDLE, null, null)
@@ -34,7 +37,7 @@ class ReposRepositoryImpl @Inject internal constructor(
     private val _stateRepoDetails = MutableLiveData(
         State<Repo, RepoDetailsError>(State.Name.IDLE, null, null)
     )
-    override val stateRepoSelected: LiveData<State<Repo, RepoDetailsError>>
+    override val stateRepoDetails: LiveData<State<Repo, RepoDetailsError>>
         get() = _stateRepoDetails
 
     init {
@@ -42,27 +45,30 @@ class ReposRepositoryImpl @Inject internal constructor(
             reposInLocalDb.clear()
             reposInLocalDb.addAll(it.orEmpty())
             val result = applyFavoriteTransformation(reposInCaches, reposInLocalDb)
-            if (!isFirstTimeObserving) {
+            if (!isFirstTimeObservingLocalDb) {
                 _stateRepoList.value = State(State.Name.SUCCESS, value = result)
             } else {
-                isFirstTimeObserving = false
+                isFirstTimeObservingLocalDb = false
             }
         }
     }
 
     override suspend fun toggleFavoriteRepo(id: Long, name: String) {
-        val isRepoIdInLocalDataDb = favoriteReposLocalDataSource.isRepoExist(id)
-        if (isRepoIdInLocalDataDb) {
-            favoriteReposLocalDataSource.deleteById(id)
-        } else {
-            favoriteReposLocalDataSource.insert(RepoLocal(id, name))
+        withContext(Dispatchers.IO) {
+            val isRepoIdInLocalDataDb = favoriteReposLocalDataSource.isRepoExist(id)
+            if (isRepoIdInLocalDataDb) {
+                favoriteReposLocalDataSource.deleteById(id)
+            } else {
+                favoriteReposLocalDataSource.insert(RepoLocal(id, name))
+            }
         }
     }
 
-    override suspend fun fetchReposList(repoFilter: RepoFilter) {
+    override suspend fun tryFetchRepos() {
+        _stateRepoList.value = State(State.Name.LOADING, value = null, error = null)
         try {
             val result = applyFavoriteTransformation(
-                fetchRepos(repoFilter),
+                fetchRepos(repoFilterInCache),
                 reposInLocalDb
             )
             _stateRepoList.value = State(State.Name.SUCCESS, value = result, error = null)
@@ -72,6 +78,7 @@ class ReposRepositoryImpl @Inject internal constructor(
     }
 
     override suspend fun forceRefresh() {
+        _stateRepoList.value = State(State.Name.LOADING, value = null, error = null)
         try {
             val result = applyFavoriteTransformation(
                 fetchRepos(RepoFilter.newDefaultInstance()),
@@ -94,29 +101,24 @@ class ReposRepositoryImpl @Inject internal constructor(
         }
     }
 
-    private fun applyFavoriteTransformation(
-        reposInCache: List<Repo>,
-        favoriteRepoIds: List<RepoLocal>
-    ): List<Repo> {
-        return reposInCache.map { repo ->
-            if (favoriteRepoIds.firstOrNull { repo.id == it.id } != null) repo.copy(isFavorite = true)
-            else repo.copy(isFavorite = false)
-        }
-            .sortedByDescending { it.isFavorite }
+    override suspend fun changeFilter(repoFilter: RepoFilter) {
+        repoFilterInCache = repoFilter
+        tryFetchRepos()
     }
 
     private suspend fun fetchRepos(repoFilter: RepoFilter): List<Repo> {
-        _stateRepoList.value = State(State.Name.LOADING)
-        val result = reposNetworkDataSource.fetchRepos(
-            repoFilter.sort.toRepoSortApi().serverValue,
-            repoFilter.perPage,
-            repoFilter.query
-        )
-            .items.map { it.toRepo() }
-        result.fillEachRepoWithIssuesOpenedBeforeOneYearAgo()
-        reposInCaches.clear()
-        reposInCaches.addAll(result)
-        return result
+        return withContext(Dispatchers.IO) {
+            val result = reposNetworkDataSource.fetchRepos(
+                repoFilter.sort.toRepoSortApi().serverValue,
+                repoFilter.perPage,
+                repoFilter.query
+            )
+                .items.map { it.toRepo() }
+            result.fillEachRepoWithIssuesOpenedBeforeOneYearAgo()
+            reposInCaches.clear()
+            reposInCaches.addAll(result)
+            result
+        }
     }
 
     private suspend fun List<Repo>.fillEachRepoWithIssuesOpenedBeforeOneYearAgo() {
@@ -157,6 +159,17 @@ class ReposRepositoryImpl @Inject internal constructor(
             }.filter { it.amount > 0 }
             it.issuesHistory.addAll(newList)
         }
+    }
+
+    private fun applyFavoriteTransformation(
+        reposInCache: List<Repo>,
+        favoriteRepoIds: List<RepoLocal>
+    ): List<Repo> {
+        return reposInCache.map { repo ->
+            if (favoriteRepoIds.firstOrNull { repo.id == it.id } != null) repo.copy(isFavorite = true)
+            else repo.copy(isFavorite = false)
+        }
+            .sortedByDescending { it.isFavorite }
     }
 
     private fun RepoApi.toRepo(): Repo {

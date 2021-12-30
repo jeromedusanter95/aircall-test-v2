@@ -25,7 +25,6 @@ abstract class BaseDialogFragment<B : ViewDataBinding, A : IUiAction, VM : BaseV
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        retainInstance = true
         binding = DataBindingUtil.inflate(inflater, resId, container, false)
         binding.setVariable(BR.viewModel, viewModel)
         binding.lifecycleOwner = viewLifecycleOwner
